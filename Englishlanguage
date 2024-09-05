@@ -1,0 +1,58 @@
+Method 1
+__________
+const express = require('express');
+const app = express();
+
+// Middleware to enforce English language only
+function languageFilter(req, res, next) {
+    const acceptedLanguages = req.headers['accept-language'] || '';
+
+    if (acceptedLanguages.includes('en')) {
+        next(); // Proceed to the next middleware or route handler
+    } else {
+        res.status(406).send('Only English language is allowed.');
+    }
+}
+
+app.use(languageFilter);
+
+app.get('/', (req, res) => {
+    res.send('Welcome! You are viewing this page in English.');
+});
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
+
+Method 2
+____________
+const express = require('express');
+const app = express();
+
+// Middleware to enforce English language only
+function languageFilter(req, res, next) {
+    const acceptedLanguages = req.headers['accept-language'] || '';
+    const allowedLanguages = ['en']; // List of allowed languages
+
+    const hasEnglish = acceptedLanguages.split(',').some(lang => {
+        return allowedLanguages.includes(lang.split(';')[0]);
+    });
+
+    if (hasEnglish) {
+        next(); // Proceed to the next middleware or route handler
+    } else {
+        res.status(406).send('Only English language is allowed.');
+    }
+}
+
+app.use(languageFilter);
+
+app.get('/', (req, res) => {
+    res.send('Welcome! You are viewing this page in English.');
+});
+
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
+});
+
+_______________________________________________
